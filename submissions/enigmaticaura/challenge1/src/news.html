@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnigmaticAura - News</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a class="navbar-brand" href="../index.html">
+        <img src="../assets/images/cat.jpg" alt="Logo" class="logo">
+        EnigmaticAura
+      </a>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main style="padding: 50px 20px; background-color: #1a1a2e; color: #d1d1d1;">
+    <h1 style="text-align: center; font-size: 3em; color: #00d4ff; margin-bottom: 30px;">News & Updates</h1>
+    <div id="news-feed" 
+        style="display: flex; flex-direction: column; gap: 20px; max-width: 1200px; margin: 0 auto;">
+        <!-- News content will be dynamically inserted here -->
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 EnigmaticAura. All Rights Reserved.</p>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      fetch('https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@adicahyadir')
+          .then(response => response.json())
+          .then(data => {
+              const newsFeed = document.getElementById('news-feed');
+              const items = data.items.slice(0, 4); // Get the latest 4 items
+
+              items.forEach(item => {
+                  const newsRow = document.createElement('div');
+                  newsRow.style = `
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      background: linear-gradient(145deg, #2f2f49, #1e1e37);
+                      padding: 15px 20px;
+                      border-radius: 10px;
+                      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+                      transition: transform 0.3s;
+                  `;
+                  newsRow.onmouseover = () => newsRow.style.transform = 'translateY(-5px)';
+                  newsRow.onmouseout = () => newsRow.style.transform = 'translateY(0)';
+
+                  const titleAndSnippet = document.createElement('div');
+                  titleAndSnippet.style = "flex: 1; margin-right: 15px;";
+                  titleAndSnippet.innerHTML = `
+                      <h2 style="font-size: 1.5em; color: #00d4ff; margin: 0;">${item.title}</h2>
+                      <p style="font-size: 1em; color: #d1d1d1; margin-top: 5px;">${item.description.substring(0, 100)}...</p>
+                  `;
+
+                  const readMoreButton = document.createElement('a');
+                  readMoreButton.href = item.link;
+                  readMoreButton.target = "_blank";
+                  readMoreButton.textContent = "Read More";
+                  readMoreButton.style = `
+                      display: inline-block;
+                      text-decoration: none;
+                      font-weight: bold;
+                      color: #fff;
+                      background-color: #00d4ff;
+                      padding: 10px 20px;
+                      border-radius: 5px;
+                      transition: background-color 0.3s;
+                      white-space: nowrap;
+                  `;
+                  readMoreButton.onmouseover = () => readMoreButton.style.backgroundColor = '#009ecc';
+                  readMoreButton.onmouseout = () => readMoreButton.style.backgroundColor = '#00d4ff';
+
+                  newsRow.appendChild(titleAndSnippet);
+                  newsRow.appendChild(readMoreButton);
+                  newsFeed.appendChild(newsRow);
+              });
+          })
+          .catch(error => console.error('Error fetching the RSS feed:', error));
+  });
+</script>
+</body>
+</html>
